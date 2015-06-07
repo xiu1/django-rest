@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django_rest.views import RestView
-from django_rest.auth import ApiKeyAuth
+from django_rest.auth import HeaderAuth, UrlAuth
 from rest.models import RestModel, AuthModel
 
 
@@ -10,10 +10,20 @@ class TestRestView(RestView):
     allow_http_method = ['GET', 'POST', 'PUT', 'DELETE']
 
 
-class TestApiKeyAuth(ApiKeyAuth):
+class TestHeaderAuth(HeaderAuth):
+    model = AuthModel
+    key_model_kwarg = 'api_key'
+
+
+class TestAuthHeaderView(RestView):
+    model = RestModel
+    auth_class = TestHeaderAuth
+
+
+class TestUrlAuth(UrlAuth):
     model = AuthModel
 
 
-class TestAuthRestView(RestView):
+class TestAuthUrlView(RestView):
     model = RestModel
-    auth_class = TestApiKeyAuth
+    auth_class = TestUrlAuth

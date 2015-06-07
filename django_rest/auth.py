@@ -13,10 +13,24 @@ class BaseAuth(object):
         return False
 
 
-class ApiKeyAuth(BaseAuth):
+class HeaderAuth(BaseAuth):
+    model = None
+    key_model_kwarg = 'token'
+    key_header_kwarg = 'x-auth-key'
+
+    def check(self):
+        header_kwarg = self.request.META.get(self.key_header_kwarg, '')
+        return self.model.objects.filter(
+            **{self.key_model_kwarg: header_kwarg}
+        ).exists()
+
+
+class UrlAuth(BaseAuth):
     model = None
     key_model_kwarg = 'api_key'
     key_url_kwarg = 'api_key'
+
+    token_key = 'x-auth-token'
 
     def check(self):
         return self.model.objects.filter(

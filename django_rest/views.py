@@ -47,16 +47,14 @@ class RestView(View):
             self._create(data)
             return http.HttpResponse(status=201)
         except:
-            # TODO: not is_valid return 409
             return http.HttpResponseBadRequest()
 
     def put(self, *args, **kwargs):
         try:
             data = json.loads(self.request.body)
             self._update(data)
-            return JsonResponse({})
+            return http.HttpResponse(status=201)
         except:
-            # TODO: not is_valid return 409
             return http.HttpResponseBadRequest()
 
     def patch(self, *args, **kwargs):
@@ -65,7 +63,7 @@ class RestView(View):
     def delete(self, *args, **kwargs):
         try:
             self._delete()
-            return JsonResponse({})
+            return http.HttpResponse(status=204)
         except:
             return http.HttpResponseBadRequest()
 
@@ -85,10 +83,15 @@ class RestView(View):
     def get_queryset(self):
         return self.model.objects.filter(**self.get_filter())
 
+    def get_object(self):
+        queryset = self.get_queryset()
+        if len(queryset) == 1 and self.get_filter():
+            return queryset.get()
+        raise Exception('QueryString is not single object')
+
     def _select(self, **query_param):
         object_list = self.get_queryset()
         return json.dumps(list(object_list.values()), cls=DjangoJSONEncoder)
-        #return serializers.serialize('json', object_list)
 
     def _create(self, query_param):
         form_class = modelform_factory(self.model, fields="__all__")
@@ -99,7 +102,7 @@ class RestView(View):
             raise Exception("{}".form.errors)
 
     def _update(self, query_param):
-        instance = self.get_queryset().get()
+        instance = self.get_object()
         form_class = modelform_factory(self.model, fields="__all__")
         form = form_class(data=query_param, instance=instance)
         if form.is_valid():
@@ -108,8 +111,5 @@ class RestView(View):
             raise Exception("{}".form.errors)
 
     def _delete(self):
-        if not self.get_filter():
-            raise Exception('not query paramater')
-
-        obj = self.get_queryset().get()
+        obj = self.get_object()
         obj.delete()

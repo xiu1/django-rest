@@ -1,14 +1,9 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest.views import TestRestView, TestAuthRestView
+from rest.views import TestRestView, TestAuthHeaderView, TestAuthUrlView
 
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'rest.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
-    #url(r'^admin/', include(admin.site.urls)),
-
     url('^rest/$', TestRestView.as_view(), name='rest'),
-    url('^auth_rest/(?P<api_key>.+)/$', TestAuthRestView.as_view(), name='rest_auth'),
+    url('^auth_header_rest/$', TestAuthHeaderView.as_view(), name='rest_auth_header'),
+    url('^auth_url_rest/(?P<api_key>.+)/$', TestAuthUrlView.as_view(), name='rest_auth_url'),
 ]

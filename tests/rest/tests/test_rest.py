@@ -47,7 +47,7 @@ class RestSuccessTest(TestCase):
             "{}?id={}".format(reverse('rest'), instance.id),
             content_type='application/json', data=data
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)
         self.assertQuerysetEqual(
             RestModel.objects.filter(id=instance.id),
             ['<RestModel: test_update2>']
@@ -59,7 +59,7 @@ class RestSuccessTest(TestCase):
             "{}?id={}".format(reverse('rest'), instance.id),
             content_type='application/json'
         )
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 204)
         self.assertQuerysetEqual(RestModel.objects.all(), [])
 
 
