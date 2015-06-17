@@ -30,8 +30,6 @@ class UrlAuth(BaseAuth):
     key_model_kwarg = 'api_key'
     key_url_kwarg = 'api_key'
 
-    token_key = 'x-auth-token'
-
     def check(self):
         return self.model.objects.filter(
             **{self.key_model_kwarg: self.kwargs[self.key_url_kwarg]}
