@@ -8,6 +8,13 @@ Simple REST view for django
 |PUT/PATCH|UPDATE| 
 |DELETE|DELETE|
 
+# HOW TO INSTALL
+
+```
+$ python setup.py develop
+or
+$ python setup.py install
+```
 
 # HOW TO USE
 
